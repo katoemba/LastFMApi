@@ -8,7 +8,7 @@ This package makes data from the last.fm api available via observables in Swift.
 
 ## Usage
 
-```
+```swift
   let lastfm = LastFMApi(apiKey: apiKey)
   lastfm.info(artist: "Tame Impala")
       .subscribe(onNext: { (info) in
@@ -24,7 +24,7 @@ This package makes data from the last.fm api available via observables in Swift.
 
 ## Dependencies
 
-lastfm-api-test depends on RxSwift, Alamofire and RxAlamofire. To use the library, you will need a last.fm api key.
+lastfm-api-swift depends on RxSwift, Alamofire and RxAlamofire. To use the library, you will need a last.fm api key.
 
 ## Testing
 
@@ -33,11 +33,7 @@ LASTFM_API_KEY=YOURKEY swift test
 
 ## Installation
 
-Currently only build and usage via swift package manager is supported:
-
-### [Swift Package Manager](https://github.com/apple/swift-package-manager)
-
-The easiest way to add the library is directly from within XCode (11). Alternatively you can create a `Package.swift` file. 
+Currently only build and usage via swift package manager is supported. The easiest way to add the library is directly from within XCode (11). Alternatively you can create a `Package.swift` file. 
 
 ```swift
 // swift-tools-version:5.0
