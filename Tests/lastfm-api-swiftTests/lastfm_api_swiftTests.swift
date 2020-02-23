@@ -22,11 +22,16 @@ final class lastfm_api_swiftTests: XCTestCase {
             .materialize()
         
         switch result {
-        case .completed(let infos):
-            let artistInfo = infos[0]
-            XCTAssert(artistInfo.name == "Destroyer")
-            XCTAssert(artistInfo.bio != "")
-            XCTAssert(artistInfo.similarArtists.count > 0)
+        case .completed(let results):
+            let result = results[0]
+            switch result {
+            case let .success(artistInfo):
+                XCTAssert(artistInfo.name == "Destroyer")
+                XCTAssert(artistInfo.bio != "")
+                XCTAssert(artistInfo.similarArtists.count > 0)
+            case let .failure(error):
+                XCTAssert(false, "info(artist) failed: \(error)")
+            }
         default:
             XCTAssert(false, "info(artist) failed")
         }
@@ -42,11 +47,16 @@ final class lastfm_api_swiftTests: XCTestCase {
             .materialize()
         
         switch result {
-        case .completed(let infos):
-            let artistInfo = infos[0]
-            XCTAssert(artistInfo.name == "Taylor Swift")
-            XCTAssert(artistInfo.bio != "")
-            XCTAssert(artistInfo.similarArtists.count > 0)
+        case .completed(let results):
+            let result = results[0]
+            switch result {
+            case let .success(artistInfo):
+                XCTAssert(artistInfo.name == "Taylor Swift")
+                XCTAssert(artistInfo.bio != "")
+                XCTAssert(artistInfo.similarArtists.count > 0)
+            case let .failure(error):
+                XCTAssert(false, "info(artist) failed: \(error)")
+            }
         default:
             XCTAssert(false, "corrected info(artist) failed")
         }
