@@ -3,16 +3,12 @@ import RxSwift
 import RxAlamofire
 import Alamofire
 
-public struct ArtistInfo {
-    var name: String = ""
-    var bio: String = ""
-    var similarArtists: [String] = []
-}
-
 public class LastFMApi {
     public enum ApiError: Error {
         case notFound
+        case missingData
         case invalidRequest
+        case invalidResponse
     }
 
     let apiKey: String
