@@ -25,7 +25,8 @@ final class lastfm_api_swift_artistTests: XCTestCase {
             case let .success(artistInfo):
                 XCTAssert(artistInfo.name == "Destroyer")
                 XCTAssert(artistInfo.mbid != "")
-                XCTAssert(artistInfo.bio != "")
+                XCTAssert(artistInfo.biography != "")
+                XCTAssert(artistInfo.shortBiography != "")
             case let .failure(error):
                 XCTAssert(false, "\(error)")
             }
@@ -47,7 +48,8 @@ final class lastfm_api_swift_artistTests: XCTestCase {
             case let .success(artistInfo):
                 XCTAssert(artistInfo.name == "Taylor Swift")
                 XCTAssert(artistInfo.mbid != "")
-                XCTAssert(artistInfo.bio != "")
+                XCTAssert(artistInfo.biography != "")
+                XCTAssert(artistInfo.shortBiography != "")
             case let .failure(error):
                 XCTAssert(false, "\(error)")
             }

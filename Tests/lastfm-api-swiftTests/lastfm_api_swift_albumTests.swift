@@ -25,6 +25,7 @@ final class lastfm_api_swift_albumTests: XCTestCase {
             case let .success(albumInfo):
                 XCTAssert(albumInfo.name == "Lover")
                 XCTAssert(albumInfo.description != "")
+                XCTAssert(albumInfo.shortDescription != "")
             case let .failure(error):
                 XCTAssert(false, "\(error)")
             }

@@ -16,6 +16,8 @@ public class LastFMApi {
     private let encoding = URLEncoding.default
     private let headers = ["Content-Type": "application/json"]
     
+    /// Initialize a LastFMApi object
+    /// - Parameter apiKey: your last.fm api key
     public init(apiKey: String) {
         self.apiKey = apiKey
     }

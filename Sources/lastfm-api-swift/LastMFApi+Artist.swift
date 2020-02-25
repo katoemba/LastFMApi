@@ -11,11 +11,16 @@ import RxSwift
 public struct ArtistInfo {
     var name: String = ""
     var mbid: String = ""
-    var bio: String = ""
+    var biography: String = ""
+    var shortBiography: String? = nil
 }
 
 extension LastFMApi {
     public typealias ArtisInfoResult = Swift.Result<ArtistInfo, ApiError>
+    
+    /// Retrieve a biography of an artist
+    /// - Parameter artist: artist name
+    /// - Returns: an observable result giving either a .success(ArtistInfo) or .failure
     public func info(artist: String) -> Observable<ArtisInfoResult> {
         struct Root: Decodable {
             var artist: Artist?
@@ -43,11 +48,12 @@ extension LastFMApi {
                     let root = try JSONDecoder().decode(Root.self, from: data)
                     
                     guard let artist = root.artist else { return .failure(.notFound) }
-                    guard let bio = artist.bio?.content ?? artist.bio?.summary else { return .failure(.missingData) }
+                    guard let biography = artist.bio?.content ?? artist.bio?.summary else { return .failure(.missingData) }
 
                     return .success(ArtistInfo(name: artist.name,
                                                mbid: artist.mbid ?? "",
-                                               bio: bio))
+                                               biography: biography,
+                                               shortBiography: artist.bio?.summary))
                 case let .failure(error):
                     return .failure(error)
                 }
@@ -60,6 +66,16 @@ extension LastFMApi {
 
 
     public typealias SimilarArtistsResult = Swift.Result<[String], ApiError>
+    
+    /// Retrieve a biography of an artist
+    /// - Parameter artist: artist name
+    /// - Returns: an observable ArtistInfoResult giving either a .success or .failure
+
+    /// Retrieve an array of similar artists
+    /// - Parameters:
+    ///   - artist: the artist to search for
+    ///   - limit: the maximum number of similar artists to return (default = 20)
+    /// - Returns: an observable result giving either a .success([String]) or .failure
     public func similarArtists(artist: String, limit: Int = 20) -> Observable<SimilarArtistsResult> {
         struct Root: Decodable {
             var similarartists: SimilarArtist?

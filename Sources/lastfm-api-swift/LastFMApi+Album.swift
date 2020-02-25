@@ -11,10 +11,17 @@ import RxSwift
 public struct AlbumInfo {
     var name: String = ""
     var description: String = ""
+    var shortDescription: String? = nil
 }
 
 extension LastFMApi {
     public typealias AlbumInfoResult = Swift.Result<AlbumInfo, ApiError>
+    
+    /// Retrieve a description of an album
+    /// - Parameters:
+    ///   - album: album title
+    ///   - artist: artist name
+    /// - Returns: an observable result giving either a .success(AlbumInfo) or .failure
     public func info(album: String, artist: String) -> Observable<AlbumInfoResult> {
         struct Root: Decodable {
             var album: Album?
@@ -46,7 +53,8 @@ extension LastFMApi {
                     guard let description = album.wiki?.content ?? album.wiki?.summary else { return .failure(.missingData) }
 
                     return .success(AlbumInfo(name: album.name,
-                                              description: description))
+                                              description: description,
+                                              shortDescription: album.wiki?.summary))
                 case let .failure(error):
                     return .failure(error)
                 }
