@@ -9,10 +9,10 @@ import Foundation
 import RxSwift
 
 public struct ArtistInfo {
-    var name: String = ""
-    var mbid: String = ""
-    var biography: String = ""
-    var shortBiography: String? = nil
+    public var name: String = ""
+    public var mbid: String = ""
+    public var biography: String = ""
+    public var shortBiography: String? = nil
 }
 
 extension LastFMApi {

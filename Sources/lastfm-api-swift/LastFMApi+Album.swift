@@ -9,9 +9,9 @@ import Foundation
 import RxSwift
 
 public struct AlbumInfo {
-    var name: String = ""
-    var description: String = ""
-    var shortDescription: String? = nil
+    public var name: String = ""
+    public var description: String = ""
+    public var shortDescription: String? = nil
 }
 
 extension LastFMApi {
