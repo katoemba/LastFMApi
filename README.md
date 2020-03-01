@@ -46,7 +46,7 @@ let package = Package(
   .package(url: "https://github.com/katoemba/lastfm-api-swift.git", from: "0.0.1")
   ],
   targets: [
-    .target(name: "MyProject", dependencies: ["lastfm-api-swift"])
+    .target(name: "MyProject", dependencies: ["LastFMApi"])
   ]
 )
 ```

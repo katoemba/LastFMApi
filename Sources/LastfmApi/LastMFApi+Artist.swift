@@ -10,7 +10,8 @@ import RxSwift
 
 public struct ArtistInfo {
     public var name: String = ""
-    public var mbid: String = ""
+    public var mbid: String? = nil
+    public var url: String = ""
     public var biography: String = ""
     public var shortBiography: String? = nil
 }
@@ -28,6 +29,7 @@ extension LastFMApi {
         struct Artist: Decodable {
             var name: String
             var mbid: String?
+            var url: String?
             var bio: Biography?
         }
         struct Biography: Decodable {
@@ -48,12 +50,17 @@ extension LastFMApi {
                     let root = try JSONDecoder().decode(Root.self, from: data)
                     
                     guard let artist = root.artist else { return .failure(.notFound) }
-                    guard let biography = artist.bio?.content ?? artist.bio?.summary else { return .failure(.missingData) }
+                    let biography = artist.bio?.content ?? ""
+                    let biographyComponents = biography.components(separatedBy: " <a href")
+                    let shortBiography = artist.bio?.summary ?? ""
+                    let shortBiographyComponents = shortBiography.components(separatedBy: " <a href")
 
+                    guard let url = artist.url, biographyComponents.count > 0, biographyComponents[0] != "" else { return .failure(.missingData) }
                     return .success(ArtistInfo(name: artist.name,
-                                               mbid: artist.mbid ?? "",
-                                               biography: biography,
-                                               shortBiography: artist.bio?.summary))
+                                               mbid: artist.mbid,
+                                               url: url,
+                                               biography: biographyComponents[0],
+                                               shortBiography: shortBiographyComponents.count > 0 ? shortBiographyComponents[0] : nil))
                 case let .failure(error):
                     return .failure(error)
                 }

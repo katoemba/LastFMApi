@@ -1,7 +1,7 @@
 import XCTest
 import RxSwift
 import RxBlocking
-@testable import lastfm_api_swift
+@testable import LastFMApi
 
 final class lastfm_api_swift_artistTests: XCTestCase {
     private var apiKey = ""
@@ -13,7 +13,7 @@ final class lastfm_api_swift_artistTests: XCTestCase {
     }
     
     func testArtistInfo() {
-        let lastfm = LastFMApi(apiKey: apiKey)
+        let lastfm = LastFMApi(apiKey: apiKey, userAgent: "TestAgent")
         let result = lastfm.info(artist: "Destroyer")
             .toBlocking(timeout: 5.0)
             .materialize()
@@ -24,9 +24,10 @@ final class lastfm_api_swift_artistTests: XCTestCase {
             switch result {
             case let .success(artistInfo):
                 XCTAssert(artistInfo.name == "Destroyer")
-                XCTAssert(artistInfo.mbid != "")
+                XCTAssert(artistInfo.url != "")
+                XCTAssert(artistInfo.mbid ?? "" != "")
                 XCTAssert(artistInfo.biography != "")
-                XCTAssert(artistInfo.shortBiography != "")
+                XCTAssert(artistInfo.shortBiography ?? "" != "")
             case let .failure(error):
                 XCTAssert(false, "\(error)")
             }
@@ -36,7 +37,7 @@ final class lastfm_api_swift_artistTests: XCTestCase {
     }
 
     func testCorrectedArtistInfo() {
-        let lastfm = LastFMApi(apiKey: apiKey)
+        let lastfm = LastFMApi(apiKey: apiKey, userAgent: "TestAgent")
         let result = lastfm.info(artist: "Taylor Swit")
             .toBlocking(timeout: 5.0)
             .materialize()
@@ -47,9 +48,10 @@ final class lastfm_api_swift_artistTests: XCTestCase {
             switch result {
             case let .success(artistInfo):
                 XCTAssert(artistInfo.name == "Taylor Swift")
-                XCTAssert(artistInfo.mbid != "")
+                XCTAssert(artistInfo.url != "")
+                XCTAssert(artistInfo.mbid ?? "" != "")
                 XCTAssert(artistInfo.biography != "")
-                XCTAssert(artistInfo.shortBiography != "")
+                XCTAssert(artistInfo.shortBiography ?? "" != "")
             case let .failure(error):
                 XCTAssert(false, "\(error)")
             }
@@ -59,7 +61,7 @@ final class lastfm_api_swift_artistTests: XCTestCase {
     }
     
     func testSimilarArtists() {
-        let lastfm = LastFMApi(apiKey: apiKey)
+        let lastfm = LastFMApi(apiKey: apiKey, userAgent: "TestAgent")
         let result = lastfm.similarArtists(artist: "Destroyer", limit: 8)
             .toBlocking(timeout: 5.0)
             .materialize()

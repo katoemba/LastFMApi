@@ -14,12 +14,16 @@ public class LastFMApi {
     let apiKey: String
     private let url = "https://ws.audioscrobbler.com/2.0/"
     private let encoding = URLEncoding.default
-    private let headers = ["Content-Type": "application/json"]
+    private let headers: [String: String]
     
     /// Initialize a LastFMApi object
-    /// - Parameter apiKey: your last.fm api key
-    public init(apiKey: String) {
+    /// - Parameters:
+    ///   - apiKey: your last.fm api key
+    ///   - userAgent: the userAgent to report to last.fm
+    public init(apiKey: String, userAgent: String) {
         self.apiKey = apiKey
+        headers = ["Content-Type": "application/json",
+                   "User-Agent": userAgent]
     }
     
     typealias RequestResult = Swift.Result<(HTTPURLResponse, Data), ApiError>

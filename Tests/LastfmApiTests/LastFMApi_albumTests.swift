@@ -1,7 +1,7 @@
 import XCTest
 import RxSwift
 import RxBlocking
-@testable import lastfm_api_swift
+@testable import LastFMApi
 
 final class lastfm_api_swift_albumTests: XCTestCase {
     private var apiKey = ""
@@ -13,7 +13,7 @@ final class lastfm_api_swift_albumTests: XCTestCase {
     }
     
     func testAlbumInfo() {
-        let lastfm = LastFMApi(apiKey: apiKey)
+        let lastfm = LastFMApi(apiKey: apiKey, userAgent: "TestAgent")
         let result = lastfm.info(album: "Lover", artist: "Taylor Swift")
             .toBlocking(timeout: 5.0)
             .materialize()
