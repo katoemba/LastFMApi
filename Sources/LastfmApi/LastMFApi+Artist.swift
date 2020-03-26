@@ -46,7 +46,7 @@ extension LastFMApi {
         return dataPostRequest(parameters: parameters)
             .map({ result -> ArtisInfoResult in
                 switch result {
-                case let .success(_, data):
+                case let .success((_, data)):
                     let root = try JSONDecoder().decode(Root.self, from: data)
                     
                     guard let artist = root.artist else { return .failure(.notFound) }
@@ -106,7 +106,7 @@ extension LastFMApi {
         return dataPostRequest(parameters: parameters)
             .map({ result -> SimilarArtistsResult in
                 switch result {
-                case let .success(_, data):
+                case let .success((_, data)):
                     let root = try JSONDecoder().decode(Root.self, from: data)
                     
                     guard let artists = root.similarartists?.artist else { return .failure(.notFound) }

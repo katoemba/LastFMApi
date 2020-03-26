@@ -46,7 +46,7 @@ extension LastFMApi {
         return dataPostRequest(parameters: parameters)
             .map({ result -> AlbumInfoResult in
                 switch result {
-                case let .success(_, data):
+                case let .success((_, data)):
                     let root = try JSONDecoder().decode(Root.self, from: data)
                     
                     guard let album = root.album else { return .failure(.notFound) }
