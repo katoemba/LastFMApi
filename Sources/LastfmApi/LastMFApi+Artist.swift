@@ -65,7 +65,7 @@ extension LastFMApi {
                     return .failure(error)
                 }
             })
-            .catchError({ (error) -> Observable<ArtisInfoResult> in
+            .catch({ (error) -> Observable<ArtisInfoResult> in
                 print(error)
                 return Observable.just(.failure(.invalidResponse))
             })
@@ -116,7 +116,7 @@ extension LastFMApi {
                     return .failure(error)
                 }
             })
-            .catchError({ (error) -> Observable<SimilarArtistsResult> in
+            .catch({ (error) -> Observable<SimilarArtistsResult> in
                 print(error)
                 return Observable.just(.failure(.invalidResponse))
             })

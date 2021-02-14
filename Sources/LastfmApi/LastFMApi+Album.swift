@@ -59,7 +59,7 @@ extension LastFMApi {
                     return .failure(error)
                 }
             })
-            .catchError({ (error) -> Observable<AlbumInfoResult> in
+            .catch({ (error) -> Observable<AlbumInfoResult> in
                 print(error)
                 return Observable.just(.failure(.invalidResponse))
             })
