@@ -10,6 +10,7 @@ import RxSwift
 
 public struct AlbumInfo {
     public var name: String = ""
+    public var url: String = ""
     public var description: String = ""
     public var shortDescription: String? = nil
 }
@@ -29,6 +30,7 @@ extension LastFMApi {
         struct Album: Decodable {
             var name: String
             var artist: String
+            var url: String?
             var wiki: Wiki?
         }
         struct Wiki: Decodable {
@@ -50,11 +52,16 @@ extension LastFMApi {
                     let root = try JSONDecoder().decode(Root.self, from: data)
                     
                     guard let album = root.album else { return .failure(.notFound) }
-                    guard let description = album.wiki?.content ?? album.wiki?.summary else { return .failure(.missingData) }
+                    let description = album.wiki?.content ?? ""
+                    let descriptionComponents = description.components(separatedBy: " <a href")
+                    let summary = album.wiki?.summary ?? ""
+                    let summaryComponents = summary.components(separatedBy: " <a href")
 
+                    guard let url = album.url, descriptionComponents.count > 0, descriptionComponents[0] != "" else { return .failure(.missingData) }
                     return .success(AlbumInfo(name: album.name,
-                                              description: description,
-                                              shortDescription: album.wiki?.summary))
+                                              url: url,
+                                              description: descriptionComponents[0],
+                                              shortDescription: summaryComponents.count > 0 ? summaryComponents[0] : nil))
                 case let .failure(error):
                     return .failure(error)
                 }
