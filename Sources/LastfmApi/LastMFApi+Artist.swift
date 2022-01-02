@@ -43,27 +43,22 @@ extension LastFMApi {
                           "api_key": apiKey,
                           "format": "json"]
         
-        return dataPostRequest(parameters: parameters)
-            .map({ result -> ArtisInfoResult in
-                switch result {
-                case let .success((_, data)):
-                    let root = try JSONDecoder().decode(Root.self, from: data)
-                    
-                    guard let artist = root.artist else { return .failure(.notFound) }
-                    let biography = artist.bio?.content ?? ""
-                    let biographyComponents = biography.components(separatedBy: " <a href")
-                    let shortBiography = artist.bio?.summary ?? ""
-                    let shortBiographyComponents = shortBiography.components(separatedBy: " <a href")
+        return dataGetRequest(parameters: parameters)
+            .map({ data -> ArtisInfoResult in
+                let root = try JSONDecoder().decode(Root.self, from: data)
+                
+                guard let artist = root.artist else { return .failure(.notFound) }
+                let biography = artist.bio?.content ?? ""
+                let biographyComponents = biography.components(separatedBy: " <a href")
+                let shortBiography = artist.bio?.summary ?? ""
+                let shortBiographyComponents = shortBiography.components(separatedBy: " <a href")
 
-                    guard let url = artist.url, biographyComponents.count > 0, biographyComponents[0] != "" else { return .failure(.missingData) }
-                    return .success(ArtistInfo(name: artist.name,
-                                               mbid: artist.mbid,
-                                               url: url,
-                                               biography: biographyComponents[0],
-                                               shortBiography: shortBiographyComponents.count > 0 ? shortBiographyComponents[0] : nil))
-                case let .failure(error):
-                    return .failure(error)
-                }
+                guard let url = artist.url, biographyComponents.count > 0, biographyComponents[0] != "" else { return .failure(.missingData) }
+                return .success(ArtistInfo(name: artist.name,
+                                           mbid: artist.mbid,
+                                           url: url,
+                                           biography: biographyComponents[0],
+                                           shortBiography: shortBiographyComponents.count > 0 ? shortBiographyComponents[0] : nil))
             })
             .catch({ (error) -> Observable<ArtisInfoResult> in
                 print(error)
@@ -99,22 +94,17 @@ extension LastFMApi {
         let parameters = ["method": "artist.getsimilar",
                           "artist": artist,
                           "autocorrect": "1",
-                          "limit": limit,
+                          "limit": "\(limit)",
                           "api_key": apiKey,
-        "format": "json"] as [String: Any]
+                          "format": "json"]
         
-        return dataPostRequest(parameters: parameters)
-            .map({ result -> SimilarArtistsResult in
-                switch result {
-                case let .success((_, data)):
-                    let root = try JSONDecoder().decode(Root.self, from: data)
-                    
-                    guard let artists = root.similarartists?.artist else { return .failure(.notFound) }
+        return dataGetRequest(parameters: parameters)
+            .map({ data -> SimilarArtistsResult in
+                let root = try JSONDecoder().decode(Root.self, from: data)
+                
+                guard let artists = root.similarartists?.artist else { return .failure(.notFound) }
 
-                    return .success(artists.map { $0.name })
-                case let .failure(error):
-                    return .failure(error)
-                }
+                return .success(artists.map { $0.name })
             })
             .catch({ (error) -> Observable<SimilarArtistsResult> in
                 print(error)

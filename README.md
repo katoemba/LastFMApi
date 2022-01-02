@@ -24,7 +24,7 @@ This package makes data from the last.fm api available via observables in Swift.
 
 ## Dependencies
 
-lastfm-api-swift depends on RxSwift, Alamofire and RxAlamofire. To use the library, you will need a last.fm api key.
+lastfm-api-swift depends on RxSwift. To use the library, you will need a last.fm api key.
 
 ## Testing
 

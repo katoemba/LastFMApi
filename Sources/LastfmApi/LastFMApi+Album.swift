@@ -45,26 +45,21 @@ extension LastFMApi {
                           "api_key": apiKey,
                           "format": "json"]
         
-        return dataPostRequest(parameters: parameters)
-            .map({ result -> AlbumInfoResult in
-                switch result {
-                case let .success((_, data)):
-                    let root = try JSONDecoder().decode(Root.self, from: data)
-                    
-                    guard let album = root.album else { return .failure(.notFound) }
-                    let description = album.wiki?.content ?? ""
-                    let descriptionComponents = description.components(separatedBy: " <a href")
-                    let summary = album.wiki?.summary ?? ""
-                    let summaryComponents = summary.components(separatedBy: " <a href")
+        return dataGetRequest(parameters: parameters)
+            .map({ data -> AlbumInfoResult in
+                let root = try JSONDecoder().decode(Root.self, from: data)
+                
+                guard let album = root.album else { return .failure(.notFound) }
+                let description = album.wiki?.content ?? ""
+                let descriptionComponents = description.components(separatedBy: " <a href")
+                let summary = album.wiki?.summary ?? ""
+                let summaryComponents = summary.components(separatedBy: " <a href")
 
-                    guard let url = album.url, descriptionComponents.count > 0, descriptionComponents[0] != "" else { return .failure(.missingData) }
-                    return .success(AlbumInfo(name: album.name,
-                                              url: url,
-                                              description: descriptionComponents[0],
-                                              shortDescription: summaryComponents.count > 0 ? summaryComponents[0] : nil))
-                case let .failure(error):
-                    return .failure(error)
-                }
+                guard let url = album.url, descriptionComponents.count > 0, descriptionComponents[0] != "" else { return .failure(.missingData) }
+                return .success(AlbumInfo(name: album.name,
+                                          url: url,
+                                          description: descriptionComponents[0],
+                                          shortDescription: summaryComponents.count > 0 ? summaryComponents[0] : nil))
             })
             .catch({ (error) -> Observable<AlbumInfoResult> in
                 print(error)

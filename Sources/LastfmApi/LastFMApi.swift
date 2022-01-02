@@ -1,7 +1,5 @@
 import Foundation
 import RxSwift
-import RxAlamofire
-import Alamofire
 
 public class LastFMApi {
     public enum ApiError: Error {
@@ -12,9 +10,8 @@ public class LastFMApi {
     }
 
     let apiKey: String
-    private let url = "https://ws.audioscrobbler.com/2.0/"
-    private let encoding = URLEncoding.default
-    private let headers: HTTPHeaders
+    private static let url = "https://ws.audioscrobbler.com/2.0/"
+    private let userAgent: String
     
     /// Initialize a LastFMApi object
     /// - Parameters:
@@ -22,20 +19,32 @@ public class LastFMApi {
     ///   - userAgent: the userAgent to report to last.fm
     public init(apiKey: String, userAgent: String) {
         self.apiKey = apiKey
-        headers = HTTPHeaders([HTTPHeader(name: "Content-Type", value: "application/json"),
-                               HTTPHeader(name: "User-Agent", value: userAgent)])
+        self.userAgent = userAgent
     }
     
-    typealias RequestResult = Swift.Result<(HTTPURLResponse, Data), ApiError>
-    func dataPostRequest(parameters: [String: Any]) -> Observable<RequestResult> {
-        return RxAlamofire.requestData(.get, url, parameters: parameters, encoding: encoding, headers: headers)
-            .flatMapFirst { (arg) -> Observable<RequestResult> in
-                let (response, data) = arg
-                guard response.statusCode == 200, (response.mimeType ?? "").contains("json") else {
-                    return Observable.just(.failure(.invalidRequest))
-                }
-                return Observable.just(.success((response, data)))
+    func dataGetRequest(parameters: [String: String]) -> Observable<Data> {
+        Observable.create { observer in
+            var components = URLComponents(string: Self.url)!
+            components.queryItems = parameters.map { (key, value) in
+                URLQueryItem(name: key, value: value)
             }
+
+            var request = URLRequest(url: components.url!, timeoutInterval: 3)
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue("userAgent", forHTTPHeaderField: "User-Agent")
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                if let data = data {
+                    observer.onNext(data)
+                    observer.onCompleted()
+                }
+                else {
+                    observer.onError(error!)
+                }
+            }
+
+            task.resume()
+            return Disposables.create()
+        }
     }
 }
 
