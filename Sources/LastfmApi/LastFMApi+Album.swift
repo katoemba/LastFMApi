@@ -54,7 +54,7 @@ extension LastFMApi {
                 let descriptionComponents = description.components(separatedBy: " <a href")
                 let summary = album.wiki?.summary ?? ""
                 let summaryComponents = summary.components(separatedBy: " <a href")
-
+                
                 guard let url = album.url, descriptionComponents.count > 0, descriptionComponents[0] != "" else { return .failure(.missingData) }
                 return .success(AlbumInfo(name: album.name,
                                           url: url,
@@ -65,5 +65,6 @@ extension LastFMApi {
                 print(error)
                 return Observable.just(.failure(.invalidResponse))
             })
+                    .observe(on: MainScheduler.instance)
     }
 }

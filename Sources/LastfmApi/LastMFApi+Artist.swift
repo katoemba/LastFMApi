@@ -52,7 +52,7 @@ extension LastFMApi {
                 let biographyComponents = biography.components(separatedBy: " <a href")
                 let shortBiography = artist.bio?.summary ?? ""
                 let shortBiographyComponents = shortBiography.components(separatedBy: " <a href")
-
+                
                 guard let url = artist.url, biographyComponents.count > 0, biographyComponents[0] != "" else { return .failure(.missingData) }
                 return .success(ArtistInfo(name: artist.name,
                                            mbid: artist.mbid,
@@ -65,14 +65,14 @@ extension LastFMApi {
                 return Observable.just(.failure(.invalidResponse))
             })
     }
-
-
+    
+    
     public typealias SimilarArtistsResult = Swift.Result<[String], ApiError>
     
     /// Retrieve a biography of an artist
     /// - Parameter artist: artist name
     /// - Returns: an observable ArtistInfoResult giving either a .success or .failure
-
+    
     /// Retrieve an array of similar artists
     /// - Parameters:
     ///   - artist: the artist to search for
@@ -103,12 +103,13 @@ extension LastFMApi {
                 let root = try JSONDecoder().decode(Root.self, from: data)
                 
                 guard let artists = root.similarartists?.artist else { return .failure(.notFound) }
-
+                
                 return .success(artists.map { $0.name })
             })
             .catch({ (error) -> Observable<SimilarArtistsResult> in
                 print(error)
                 return Observable.just(.failure(.invalidResponse))
             })
+                    .observe(on: MainScheduler.instance)
     }
 }
