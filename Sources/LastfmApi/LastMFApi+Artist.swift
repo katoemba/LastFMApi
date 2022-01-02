@@ -64,6 +64,7 @@ extension LastFMApi {
                 print(error)
                 return Observable.just(.failure(.invalidResponse))
             })
+                    .observe(on: MainScheduler.instance)
     }
     
     
